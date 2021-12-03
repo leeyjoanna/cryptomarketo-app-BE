@@ -1,0 +1,48 @@
+import express from 'express'
+import mongoose from 'mongoose'
+import config from './utils/config'
+import middleware from './utils/middleware'
+import logger from './utils/logger'
+import path from 'path'
+import cors from 'cors'
+import router from './controllers/api'
+const app = express()
+const port = 3001
+
+if(config.MONGODB_URI){
+  mongoose.connect(config.MONGODB_URI)
+  .then( () => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.info('error connecting to MongoDB:', error.message)
+  })
+}
+
+app.use('/api', router);
+app.use(cors())
+app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.json())
+
+
+app.use('/*', (req, res) => {
+  const searchQuery = req.originalUrl.split('?')
+  console.log('searchquery', searchQuery)
+
+  if(searchQuery[1]){
+      res.redirect(searchQuery[0])
+  }
+  else{
+      res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  }
+})
+
+
+
+app.listen( port, () => {
+    console.log( `server started at http://localhost:${ port }` );
+} );
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
