@@ -39,7 +39,7 @@ router.get('/search', async (req, res) => {
 
 // search API to Polygon.io for specific coin information
 router.get('/coin/:coinID', async (req, res) => {
-  const coinTicker = req.params.coinID;
+  const coinTicker = req.params.coinID.toUpperCase();
   const date = (new Date()).toISOString().split('T')[0]
   console.log('date', date)
   const url = `https://api.polygon.io/v1/open-close/crypto/${coinTicker}/USD/${date}?adjusted=true`;
