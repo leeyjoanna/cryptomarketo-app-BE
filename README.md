@@ -3,7 +3,7 @@
 [Use it here on Heroku!]()
 A web app where users can search for cryptocurrency details and create their own shareable watch list.
 
-Limitations: free tier API key limits to 5 calls/minute with reduced data provided about cryptocurrencies. 
+Limitations: free tier API key limits to 5 calls/minute with reduced data provided about cryptocurrencies.
 
 ## Design: top-level
 
@@ -23,5 +23,3 @@ Architectural pattern: MVC
 ## Design decisions
 
 ## Accessibility
-
-
