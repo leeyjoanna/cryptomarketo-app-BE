@@ -12,7 +12,6 @@ const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const api_1 = __importDefault(require("./controllers/api"));
 const app = (0, express_1.default)();
-const port = 3001;
 if (config_1.default.MONGODB_URI) {
     mongoose_1.default.connect(config_1.default.MONGODB_URI)
         .then(() => {
@@ -29,8 +28,8 @@ app.use('/api', api_1.default);
 app.use('/*', (request, response) => {
     response.sendFile(path_1.default.join(__dirname, 'build', 'index.html'));
 });
-app.listen(port, () => {
-    console.log(`server started at http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`server started at http://localhost:${process.env.PORT}`);
 });
 app.use(middleware_1.default.unknownEndpoint);
 app.use(middleware_1.default.errorHandler);
