@@ -3,7 +3,7 @@ import express, { response, Response } from 'express'
 import axios from 'axios'
 import config from '../utils/config'
 const API_KEY = config.API_KEY
-import MarketoListType from '../my-module'
+// import MarketoListType from '../my-module'
 import MarketoList from '../models/marketoList'
 import { PolygonData, CoinName, PolygonCoinData, CoinInfo, PolygonCoinNews, CoinNews, CoinDB } from '../my-module'
 import { URLSearchParams } from 'url'
@@ -54,7 +54,7 @@ router.get('/coin/:coinID', async (req, res) => {
     console.log('api results', polygonResults);
     let coinInfo:CoinInfo = {
       symbol: polygonResults.symbol.split('-')[0],
-      day: polygonResults.day,
+      day: polygonResults.day.split('T')[0],
       open: polygonResults.open,
       close: polygonResults.close
     }
@@ -68,7 +68,7 @@ router.get('/coin/:coinID', async (req, res) => {
 }    
 })
 
-// search API to Polygon.io for specific coin information
+// search API to Polygon.io for specific coin news
 router.get('/coinNews/:coinID', async (req, res) => {
   const coinTicker = req.params.coinID;
 
@@ -91,6 +91,56 @@ router.get('/coinNews/:coinID', async (req, res) => {
         body: 'oops, something went wrong with the search!'
     })
 }    
+})
+
+router.get('/myList/refresh/:listID', async (req, res) => {
+  const listID = req.params.listID;
+  if (listID === ''){
+    return res.status(400).json({
+      body: 'oops, something went wrong with loading!'
+    })
+  }
+
+  const marketoList = await MarketoList.findOne({url: listID})
+
+  if(marketoList){
+    let coins = marketoList.coins;
+    let updatedCoinList:CoinDB[] = [];
+    for (const coin of coins) {
+      const coinTicker = coin.ticker.toUpperCase();
+      const date = (new Date()).toISOString().split('T')[0]
+      const url = `https://api.polygon.io/v1/open-close/crypto/${coinTicker}/USD/${date}?adjusted=true`;
+      try{
+        const polygonReturn = await axios.get(url, {
+            headers: { Authorization: `Bearer ${API_KEY}` 
+            }
+          });
+        const polygonResults:PolygonCoinData = polygonReturn.data;
+        
+        let coinInfo:CoinDB = {
+          name: coin.name,
+          ticker: coin.ticker,
+          date: date,
+          last_price: polygonResults.close,
+        }
+        console.log('info', coinInfo)
+        updatedCoinList.push(coinInfo)
+        console.log('list', updatedCoinList)
+      } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            body: 'oops, something went wrong with the search!'
+        })
+      }
+    }
+    console.log('updatelist', updatedCoinList)
+    return res.json(updatedCoinList)
+  }
+  else {
+    return res.status(400).json({
+      body: 'oops, something went wrong fetching from db'
+    })
+  }
 })
 
 // api call to MongoDB to get list
