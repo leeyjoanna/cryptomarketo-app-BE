@@ -70,3 +70,14 @@ export interface CoinNews{
     description: string,
     keywords: string[]
 }
+
+export interface MarketoListType{
+    url: string,
+    coins?: CoinDB[]
+}
+export interface CoinDB{
+    name: string,
+    ticker: string,
+    date: string,
+    last_price: number
+}

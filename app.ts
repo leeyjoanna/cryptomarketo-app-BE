@@ -19,25 +19,14 @@ if(config.MONGODB_URI){
   })
 }
 
-app.use('/api', router);
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.json())
+app.use('/api', router);
 
-
-app.use('/*', (req, res) => {
-  const searchQuery = req.originalUrl.split('?')
-  console.log('searchquery', searchQuery)
-
-  if(searchQuery[1]){
-      res.redirect(searchQuery[0])
-  }
-  else{
-      res.sendFile(path.join(__dirname, 'build', 'index.html'));
-  }
+app.use('/*', (request, response) => {
+  response.sendFile(path.join(__dirname, 'build', 'index.html'));
 })
-
-
 
 app.listen( port, () => {
     console.log( `server started at http://localhost:${ port }` );

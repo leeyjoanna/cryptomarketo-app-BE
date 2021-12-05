@@ -1,9 +1,16 @@
 import { model, Schema, Model, Document} from 'mongoose'
-  
+
 const MarketoListSchema: Schema = new Schema({
-    url: { type: String, required: true },
-    title: { type: String, required: true },
-    name: { type: String, required: true }
+    url: { 
+        type: String, 
+        required: true 
+    },
+    coins: [{ 
+        name: String,
+        ticker: String,
+        date: String,
+        last_price: Number
+    }]
 });
   
 const MarketoList = model('MarketoList', MarketoListSchema);

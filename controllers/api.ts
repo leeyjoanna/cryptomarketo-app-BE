@@ -1,10 +1,11 @@
 // missing api calls to mongodb to get existing lists
-import express, { Response } from 'express'
+import express, { response, Response } from 'express'
 import axios from 'axios'
 import config from '../utils/config'
 const API_KEY = config.API_KEY
+import MarketoListType from '../my-module'
 import MarketoList from '../models/marketoList'
-import { PolygonData, CoinName, PolygonCoinData, CoinInfo, PolygonCoinNews, CoinNews } from '../my-module'
+import { PolygonData, CoinName, PolygonCoinData, CoinInfo, PolygonCoinNews, CoinNews, CoinDB } from '../my-module'
 import { URLSearchParams } from 'url'
 // import Coin from '../models/coin'
 
@@ -52,7 +53,7 @@ router.get('/coin/:coinID', async (req, res) => {
     
     console.log('api results', polygonResults);
     let coinInfo:CoinInfo = {
-      symbol: polygonResults.symbol,
+      symbol: polygonResults.symbol.split('-')[0],
       day: polygonResults.day,
       open: polygonResults.open,
       close: polygonResults.close
@@ -93,35 +94,59 @@ router.get('/coinNews/:coinID', async (req, res) => {
 })
 
 // api call to MongoDB to get list
-router.get('/myList/:uuid', async (req, res) => {
-    const url = req.params.uuid
+router.get('/myList/:listID', async (req, res) => {
+  const listID = req.params.listID
 
-    if (url === ''){
-        let returnData = {
-          url: '',
-          name: '',
-          title: 'create your new list',
-        }
-        console.log(returnData)
-        return res.json(returnData)
-      }
+  if (listID === ''){
+    return res.status(400).json({
+      body: 'oops, something went wrong with loading!'
+    })
+  }
+    
+  console.log('BE the list', listID)
+  const marketoList = await MarketoList.findOne({url: listID})
 
-    const marketoList = await MarketoList.findOne({url: url})
+  if(marketoList){
+    let returnData = {
+      url: listID,
+      coins: marketoList.coins
+    }
+    return res.json(returnData)
+  }
+  else {
+    return res.status(400).json({
+      body: 'oops, something went wrong fetching from db'
+    })
+  }
+})
 
-    if(marketoList){
-        let returnData = {
-          url: url,
-          name: marketoList.name,
-          title: marketoList.title,
-        }
-        // console.log(returnData)
-        return res.json(returnData)
-      }
-      else {
-        return res.status(400).json({
-          body: 'no url bud'
-        })
-      }
+router.post('/myList/:listID', async (req, res) => {
+  const listID = req.params.listID;
+
+  const list = new MarketoList({
+    url: listID,
+    coins: []
+  })
+
+  try{
+    list.save()
+  } catch (e){
+    console.log(e)
+  }
+
+  res.json(list)
+})
+
+router.put('/myList/:listID', async (req,res) => {
+  const listID = req.params.listID;
+  const updatedList:CoinDB[] = req.body.data;
+
+  await MarketoList.findOneAndUpdate({url:listID}, {coins: updatedList}, {
+    new: true
+  })
+
+  return res.json('success!')
+
 })
 
 export default router
