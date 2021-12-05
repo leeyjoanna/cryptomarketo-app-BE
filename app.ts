@@ -6,8 +6,8 @@ import logger from './utils/logger'
 import path from 'path'
 import cors from 'cors'
 import router from './controllers/api'
+
 const app = express()
-const port = 3001
 
 if(config.MONGODB_URI){
   mongoose.connect(config.MONGODB_URI)
@@ -28,8 +28,8 @@ app.use('/*', (request:any, response:any) => {
   response.sendFile(path.join(__dirname, 'build', 'index.html'));
 })
 
-app.listen( port, () => {
-    console.log( `server started at http://localhost:${ port }` );
+app.listen( config.PORT, () => {
+    console.log( `server started at http://localhost:${ config.PORT }` );
 } );
 
 app.use(middleware.unknownEndpoint)
