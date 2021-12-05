@@ -1,6 +1,5 @@
-const express = require('express');
-const mongoose = require('mongoose');
-
+import express from 'express'
+import mongoose from 'mongoose'
 import config from './utils/config'
 import middleware from './utils/middleware'
 import logger from './utils/logger'
