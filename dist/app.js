@@ -28,8 +28,8 @@ app.use('/api', api_1.default);
 app.use('/*', (request, response) => {
     response.sendFile(path_1.default.join(__dirname, 'build', 'index.html'));
 });
-app.listen(process.env.PORT, () => {
-    console.log(`server started at http://localhost:${process.env.PORT}`);
+app.listen(port, () => {
+    console.log(`server started at http://localhost:${port}`);
 });
 app.use(middleware_1.default.unknownEndpoint);
 app.use(middleware_1.default.errorHandler);
