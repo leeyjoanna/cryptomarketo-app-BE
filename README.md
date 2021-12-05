@@ -27,16 +27,15 @@ Both front end and back end folder are available on Github. This folder holds th
     - WatchList: generates user's watch list
 
 ### Front end services (API calls via Axios)
-`getHome`: returns home page\
-`refreshList`: returns updated array of `CoinDB` with most recent coin closing price\
-*the decision to use a refresh button was due to the API limitations of free-tier,* <br>
-*ideally would prefer watch list to display most up-to-date information utilizing calls with each render*\
-`getList`: returns object with unique list ID and array of `CoinDB`\
-`createList`: returns new unique list ID associated with new document on MongoDB\
-`updateList`: returns updated `CoinDB` array if user adds/deletes coin from their watch list\
-`getCoin`: returns formatted `CoinInfo` object after calling to Polygon.io API\
-`getCoinNews`: returns formatted `CoinNews` object with max 5 articles after calling to Polygon.io API\
-`searchService`: returns array of `CoinName` objects with max 10 search results after calling to Polygon.io API
+- `getHome`: returns home page\
+- `refreshList`: returns updated array of `CoinDB` with most recent coin closing price\
+*the decision to use a refresh button was due to the API limitations of free-tier, ideally would prefer watch list to display most up-to-date information utilizing calls with each render*
+- `getList`: returns object with unique list ID and array of `CoinDB`
+- `createList`: returns new unique list ID associated with new document on MongoDB
+- `updateList`: returns updated `CoinDB` array if user adds/deletes coin from their watch list
+- `getCoin`: returns formatted `CoinInfo` object after calling to Polygon.io API
+- `getCoinNews`: returns formatted `CoinNews` object with max 5 articles after calling to Polygon.io API
+- `searchService`: returns array of `CoinName` objects with max 10 search results after calling to Polygon.io API
 
 ### Front end design decisions
 - `universal-cookies` used to store cookies in user's local browser under the key `marketoListID`
@@ -85,3 +84,19 @@ or size change as feedback to user clicks
 ## Instructions to run CryptoMarketo locally
 `git clone` the `cryptomarketo-app-BE` repository then run `npm run start`\
 This front end repository is for viewing components prior to `npm run build`
+
+## Design screen shots
+Home page: new user/no existing list
+<img width="1407" alt="NewHome" src="https://user-images.githubusercontent.com/70289434/144744985-32efa066-b753-4d64-ba57-1934b5ce88cf.png">
+
+Home page: existing user with list populated from MongoDB
+<img width="1394" alt="ExistingHome" src="https://user-images.githubusercontent.com/70289434/144744998-034c877d-a835-4ca4-bc11-e451ebc883b6.png">
+
+Search result: populated list of at most 10 results from Polygon's API 
+<img width="1320" alt="SearchResult" src="https://user-images.githubusercontent.com/70289434/144745023-043bb9ce-d2d9-430f-ba43-245600a9332f.png">
+
+Full data display: all 3 components present (news/ coin data/ watch list)
+<img width="1418" alt="FullDisplay" src="https://user-images.githubusercontent.com/70289434/144745041-6c392600-0f5c-4310-aead-5520f95f79f1.png">
+
+Popover disclaimer: informs user of current app limitations 
+<img width="1413" alt="PopoverDisclaimer" src="https://user-images.githubusercontent.com/70289434/144745063-5f837845-1656-4a69-a843-42a0b00c5d3c.png">
